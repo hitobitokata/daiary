@@ -296,8 +296,18 @@
     function handleImageUpload(e) {
       const file = e.target.files[0];
       if (!file) return;
+      const sec = document.getElementById('img-section');
+      sec.innerHTML = '<div class="img-upload-area" style="color:#aaa">画像を読み込み中...</div>';
       const reader = new FileReader();
-      reader.onload = ev => { editingImage = ev.target.result; renderImageSection(); };
+      reader.onload = ev => {
+        editingImage = ev.target.result;
+        renderImageSection();
+      };
+      reader.onerror = () => {
+        editingImage = null;
+        renderImageSection();
+        alert('画像の読み込みに失敗しました。もう一度試してください。');
+      };
       reader.readAsDataURL(file);
     }
 
@@ -315,7 +325,15 @@
     function saveMemo() {
       const title = document.getElementById('ed-title').value.trim();
       const body = document.getElementById('ed-body').value.trim();
-      if (!title && !body) return;
+      if (!title && !body) {
+        alert('タイトルか本文を入力してください。');
+        return;
+      }
+      const sec = document.getElementById('img-section');
+      if (sec && sec.textContent.includes('読み込み中')) {
+        alert('画像を読み込み中です。少し待ってから保存してください。');
+        return;
+      }
       const tagInVal = document.getElementById('tag-in') ? document.getElementById('tag-in').value.trim() : '';
       if (tagInVal && !editingTags.includes(tagInVal)) editingTags.push(tagInVal);
       const d = new Date();
