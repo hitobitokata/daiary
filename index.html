@@ -166,8 +166,22 @@
     let viewingId = null;
 
     function save() {
+// === クラウド同期のための土台 ===
+// 現在は localStorage を使用しています。
+// 将来的に Google Apps Script API を使う場合は
+// save() と初期読み込み部分を fetch() に置き換えるだけで済むようにしています。
+async function syncFromCloud(){
+  // TODO: fetch('YOUR_GAS_URL?action=list')
+  console.log('Cloud sync placeholder');
+}
+async function syncToCloud(){
+  // TODO: fetch('YOUR_GAS_URL',{method:'POST',body:JSON.stringify(memos)});
+  console.log('Cloud save placeholder');
+}
+
       localStorage.setItem('memos', JSON.stringify(memos));
       localStorage.setItem('nextId', String(nextId));
+      syncToCloud();
     }
 
     function showSection(name) {
@@ -234,7 +248,8 @@
       renderTagFilters();
     }
 
-    function filterMemos() { renderMemos(); }
+    function filterMemos() { syncFromCloud();
+    renderMemos(); }
     function selectTag(tag) { activeTag = tag; renderMemos(); }
 
     function openDetail(id) {
